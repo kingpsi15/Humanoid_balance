@@ -1,0 +1,481 @@
+<?xml version="1.0"?>
+<!-- humanoid_robot.urdf.xacro -->
+<robot name="humanoid_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/humanoid</robotNamespace>
+  </plugin>
+  </gazebo>
+
+  
+  <!-- Material definitions -->
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  
+  <material name="red">
+    <color rgba="0.8 0 0 1"/>
+  </material>
+  
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+
+  <!-- Base Link (Torso) -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.2 0.4"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.3 0.2 0.4"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="10.0"/>
+      <inertia ixx="0.4" iyy="0.4" izz="0.2" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Left Hip Roll -->
+  <joint name="hip_roll_left" type="revolute">
+    <parent link="base_link"/>
+    <child link="hip_left"/>
+    <origin xyz="0 0.1 -0.2" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.5" upper="0.5" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="hip_left">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.1"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" iyy="0.01" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Left Hip Pitch -->
+  <joint name="hip_pitch_left" type="revolute">
+    <parent link="hip_left"/>
+    <child link="thigh_left"/>
+    <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="thigh_left">
+    <visual>
+      <geometry>
+        <box size="0.08 0.08 0.3"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.08 0.08 0.3"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.02" iyy="0.02" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Left Knee -->
+  <joint name="knee_left" type="revolute">
+    <parent link="thigh_left"/>
+    <child link="shin_left"/>
+    <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="2.5" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="shin_left">
+    <visual>
+      <geometry>
+        <box size="0.06 0.06 0.3"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06 0.06 0.3"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.015" iyy="0.015" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Left Ankle Pitch -->
+  <joint name="ankle_pitch_left" type="revolute">
+    <parent link="shin_left"/>
+    <child link="ankle_left"/>
+    <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.5" upper="0.5" effort="50" velocity="10"/>
+  </joint>
+
+  <link name="ankle_left">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.06"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.02" length="0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.005" iyy="0.005" izz="0.005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Left Ankle Roll -->
+  <joint name="ankle_roll_left" type="revolute">
+    <parent link="ankle_left"/>
+    <child link="foot_left"/>
+    <origin xyz="0 0 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.3" upper="0.3" effort="50" velocity="10"/>
+  </joint>
+
+  <link name="foot_left">
+    <visual>
+      <geometry>
+        <box size="0.24 0.12 0.04"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.24 0.12 0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.8"/>
+      <inertia ixx="0.008" iyy="0.008" izz="0.008" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Right Hip Roll -->
+  <joint name="hip_roll_right" type="revolute">
+    <parent link="base_link"/>
+    <child link="hip_right"/>
+    <origin xyz="0 -0.1 -0.2" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.5" upper="0.5" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="hip_right">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.1"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" iyy="0.01" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Right Hip Pitch -->
+  <joint name="hip_pitch_right" type="revolute">
+    <parent link="hip_right"/>
+    <child link="thigh_right"/>
+    <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="thigh_right">
+    <visual>
+      <geometry>
+        <box size="0.08 0.08 0.3"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.08 0.08 0.3"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.02" iyy="0.02" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Right Knee -->
+  <joint name="knee_right" type="revolute">
+    <parent link="thigh_right"/>
+    <child link="shin_right"/>
+    <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="2.5" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="shin_right">
+    <visual>
+      <geometry>
+        <box size="0.06 0.06 0.3"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06 0.06 0.3"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.015" iyy="0.015" izz="0.01" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Right Ankle Pitch -->
+  <joint name="ankle_pitch_right" type="revolute">
+    <parent link="shin_right"/>
+    <child link="ankle_right"/>
+    <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.5" upper="0.5" effort="50" velocity="10"/>
+  </joint>
+
+  <link name="ankle_right">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.06"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.02" length="0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.005" iyy="0.005" izz="0.005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Right Ankle Roll -->
+  <joint name="ankle_roll_right" type="revolute">
+    <parent link="ankle_right"/>
+    <child link="foot_right"/>
+    <origin xyz="0 0 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.3" upper="0.3" effort="50" velocity="10"/>
+  </joint>
+
+  <link name="foot_right">
+    <visual>
+      <geometry>
+        <box size="0.24 0.12 0.04"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.24 0.12 0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.8"/>
+      <inertia ixx="0.008" iyy="0.008" izz="0.008" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- IMU Sensor -->
+  <gazebo reference="base_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu/data</topicName>
+        <bodyName>base_link</bodyName>
+        <updateRateHZ>200.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>base_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Contact sensors for feet -->
+  <gazebo reference="foot_left">
+    <sensor name="foot_left_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <contact>
+        <collision>foot_left_collision</collision>
+      </contact>
+      <plugin name="foot_left_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <bumperTopicName>foot_left_contact</bumperTopicName>
+        <frameName>foot_left</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="foot_right">
+    <sensor name="foot_right_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>200</update_rate>
+      <contact>
+        <collision>foot_right_collision</collision>
+      </contact>
+      <plugin name="foot_right_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <bumperTopicName>foot_right_contact</bumperTopicName>
+        <frameName>foot_right</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+  <!-- Transmissions for joints with position controllers -->
+  <transmission name="knee_left_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="knee_left">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="knee_left_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="knee_right_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="knee_right">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="knee_right_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="hip_pitch_left_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="hip_pitch_left">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="hip_pitch_left_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="hip_pitch_right_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="hip_pitch_right">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="hip_pitch_right_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="hip_roll_left_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="hip_roll_left">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="hip_roll_left_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="hip_roll_right_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="hip_roll_right">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="hip_roll_right_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <!-- Ankle joints remain effort-based for LQR balance -->
+  <transmission name="ankle_pitch_left_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ankle_pitch_left">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="ankle_pitch_left_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="ankle_pitch_right_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ankle_pitch_right">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="ankle_pitch_right_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="ankle_roll_left_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ankle_roll_left">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="ankle_roll_left_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="ankle_roll_right_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ankle_roll_right">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="ankle_roll_right_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+
+
+</robot>

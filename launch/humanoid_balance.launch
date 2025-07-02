@@ -1,0 +1,63 @@
+<!-- humanoid_balance.launch -->
+<launch>
+  <!-- Gazebo simulation -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find humanoid_balance)/worlds/humanoid_test.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Robot Description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find humanoid_balance)/urdf/humanoid_robot.urdf.xacro"/>
+
+  <!-- Spawn the robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model humanoid_robot -param robot_description -x 0 -y 0 -z 1.0"/>
+
+  <!-- Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <!-- Joint State Publisher -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <!-- Load joint controllers -->
+  <rosparam file="$(find humanoid_balance)/config/humanoid_control.yaml" command="load"/>
+
+  <!-- Spawn controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="/humanoid"
+        args="
+          joint_state_controller
+          ankle_pitch_left_effort_controller
+          ankle_pitch_right_effort_controller
+          ankle_roll_left_effort_controller
+          ankle_roll_right_effort_controller
+          hip_pitch_left_position_controller
+          hip_pitch_right_position_controller
+          hip_roll_left_position_controller
+          hip_roll_right_position_controller
+          knee_left_position_controller
+          knee_right_position_controller
+        " />
+
+  <!-- Balance Controller -->
+  <node name="humanoid_balance_controller" pkg="humanoid_balance" type="gazebo_humanoid_controller.py" output="screen"/>
+
+  <node name="autonomous_walk_cmd" pkg="humanoid_balance" type="autonomous_walking_cmd.py" output="screen"/>
+
+
+  <!-- Trajectory Generator -->
+  <node name="trajectory_generator" pkg="humanoid_balance" type="trajectory_generator.py" output="screen"/>
+
+  <node name="walking_pattern_generator" pkg="humanoid_balance" type="walking_pattern_generator.py" output="screen" />
+  <!-- Walking Generator Node -->
+
+  <rosparam file="$(find humanoid_balance)/config/humanoid_control.yaml" command="load"/>
+
+</launch>
+
