@@ -19,11 +19,14 @@ def autonomous_walk():
             pub.publish(cmd)
             rate.sleep()
 
-    # Sequence of commands
-    send_command(5.0, linear_x=0.1)          # Walk forward 5s
-    send_command(3.0, angular_z=0.4)         # Turn left 3s
-    send_command(4.0, linear_x=0.08, linear_y=0.04)  # Diagonal 4s
-    send_command(2.0)                        # Stop (all zeros)
+    # Repeat the walking sequence for 2 minutes
+    start_time = rospy.Time.now()
+    total_duration = rospy.Duration(1200.0)  # 20 minutes
+    while (rospy.Time.now() - start_time) < total_duration and not rospy.is_shutdown():
+        send_command(5.0, linear_x=0.1)                            # Walk forward 5s
+        send_command(3.0, angular_z=0.4)                           # Turn left 3s
+        send_command(4.0, linear_x=0.08, linear_y=0.04)            # Diagonal 4s
+        send_command(2.0, linear_x=0.0, linear_y=0.0, angular_z=0.0)  # Pause 2s
 
     rospy.loginfo("Autonomous walking sequence finished")
 
