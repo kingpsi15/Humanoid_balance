@@ -6,12 +6,16 @@
   <xacro:property name="PI" value="3.1415926535897931"/>
 
   <gazebo>
-  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/humanoid</robotNamespace>
-  </plugin>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/humanoid</robotNamespace>
+    </plugin>
   </gazebo>
 
-  
+  <!-- Ensure robot spawns upright -->
+  <gazebo reference="base_link">
+    <pose>0 0 0.9 0 0 0</pose>
+  </gazebo>
+
   <!-- Material definitions -->
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
@@ -168,7 +172,7 @@
       </geometry>
       <material name="blue"/>
     </visual>
-    <collision>
+    <collision name="foot_left_collision">
       <geometry>
         <box size="0.24 0.12 0.04"/>
       </geometry>
@@ -303,7 +307,7 @@
       </geometry>
       <material name="blue"/>
     </visual>
-    <collision>
+    <collision name="foot_right_collision">
       <geometry>
         <box size="0.24 0.12 0.04"/>
       </geometry>
@@ -362,15 +366,14 @@
     </sensor>
   </gazebo>
 
-
-  <!-- Transmissions for joints with position controllers -->
+  <!-- Transmissions for joints with effort controllers -->
   <transmission name="knee_left_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="knee_left">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="knee_left_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -378,10 +381,10 @@
   <transmission name="knee_right_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="knee_right">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="knee_right_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -389,10 +392,10 @@
   <transmission name="hip_pitch_left_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="hip_pitch_left">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="hip_pitch_left_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -400,10 +403,10 @@
   <transmission name="hip_pitch_right_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="hip_pitch_right">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="hip_pitch_right_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -411,10 +414,10 @@
   <transmission name="hip_roll_left_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="hip_roll_left">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="hip_roll_left_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -422,15 +425,15 @@
   <transmission name="hip_roll_right_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="hip_roll_right">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="hip_roll_right_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
 
-  <!-- Ankle joints remain effort-based for LQR balance -->
+  <!-- Ankle joints remain effort-based -->
   <transmission name="ankle_pitch_left_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="ankle_pitch_left">
@@ -474,8 +477,5 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-
-
-
 
 </robot>
