@@ -8,74 +8,78 @@ humanoid:
   ankle_pitch_left_effort_controller:
     type: effort_controllers/JointEffortController
     joint: ankle_pitch_left
+    pid: {p: 50.0, i: 0.1, d: 5.0}
 
   ankle_pitch_right_effort_controller:
     type: effort_controllers/JointEffortController
     joint: ankle_pitch_right
+    pid: {p: 50.0, i: 0.1, d: 5.0}
 
   ankle_roll_left_effort_controller:
     type: effort_controllers/JointEffortController
     joint: ankle_roll_left
+    pid: {p: 30.0, i: 0.1, d: 5.0}
 
   ankle_roll_right_effort_controller:
     type: effort_controllers/JointEffortController
     joint: ankle_roll_right
+    pid: {p: 30.0, i: 0.1, d: 5.0}
 
-  # Hip Controllers (Position-based to hold posture)
-  hip_pitch_left_position_controller:
-    type: position_controllers/JointPositionController
+  # Hip Controllers (Effort-based for torque control)
+  hip_pitch_left_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: hip_pitch_left
-    pid: {p: 500.0, i: 1.0, d: 10.0}
+    pid: {p: 50.0, i: 0.1, d: 5.0}
 
-  hip_pitch_right_position_controller:
-    type: position_controllers/JointPositionController
+  hip_pitch_right_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: hip_pitch_right
-    pid: {p: 500.0, i: 1.0, d: 10.0}
+    pid: {p: 50.0, i: 0.1, d: 5.0}
 
-  hip_roll_left_position_controller:
-    type: position_controllers/JointPositionController
+  hip_roll_left_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: hip_roll_left
-    pid: {p: 300.0, i: 1.0, d: 5.0}
+    pid: {p: 30.0, i: 0.1, d: 5.0}
 
-  hip_roll_right_position_controller:
-    type: position_controllers/JointPositionController
+  hip_roll_right_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: hip_roll_right
-    pid: {p: 300.0, i: 1.0, d: 5.0}
+    pid: {p: 30.0, i: 0.1, d: 5.0}
 
-  # Knee Controllers (Position-based to hold posture)
-  knee_left_position_controller:
-    type: position_controllers/JointPositionController
+  # Knee Controllers (Effort-based for torque control)
+  knee_left_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: knee_left
-    pid: {p: 600.0, i: 1.0, d: 15.0}
+    pid: {p: 60.0, i: 0.1, d: 10.0}
 
-  knee_right_position_controller:
-    type: position_controllers/JointPositionController
+  knee_right_effort_controller:
+    type: effort_controllers/JointEffortController
     joint: knee_right
-    pid: {p: 600.0, i: 1.0, d: 15.0}
+    pid: {p: 60.0, i: 0.1, d: 10.0}
 
   gazebo_ros_control:
     pid_gains:
       hip_pitch_left:
-        p: 500.0
-        i: 1.0
-        d: 10.0
+        p: 50.0
+        i: 0.1
+        d: 5.0
       hip_pitch_right:
-        p: 500.0
-        i: 1.0
-        d: 10.0
+        p: 50.0
+        i: 0.1
+        d: 5.0
       hip_roll_left:
-        p: 300.0
-        i: 1.0
+        p: 30.0
+        i: 0.1
         d: 5.0
       hip_roll_right:
-        p: 300.0
-        i: 1.0
+        p: 30.0
+        i: 0.1
         d: 5.0
       knee_left:
-        p: 600.0
-        i: 1.0
-        d: 15.0
+        p: 60.0
+        i: 0.1
+        d: 10.0
       knee_right:
-        p: 600.0
-        i: 1.0
-        d: 15.0
+        p: 60.0
+        i: 0.1
+        d: 10.0
