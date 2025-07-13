@@ -1,5 +1,8 @@
 <!-- humanoid_balance.launch -->
 <launch>
+  <!-- Robot Description (must come before spawning the model) -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find humanoid_balance)/urdf/humanoid_robot.urdf.xacro"/>
+
   <!-- Gazebo simulation -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find humanoid_balance)/worlds/humanoid_test.world"/>
@@ -10,10 +13,7 @@
     <arg name="debug" value="false"/>
   </include>
 
-  <!-- Robot Description -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find humanoid_balance)/urdf/humanoid_robot.urdf.xacro"/>
-
-  <!-- Spawn the robot -->
+  <!-- Spawn the robot in Gazebo -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
         args="-urdf -model humanoid_robot -param robot_description -x 0 -y 0 -z 1.0"/>
 
@@ -28,7 +28,7 @@
   <!-- Load joint controllers -->
   <rosparam file="$(find humanoid_balance)/config/humanoid_control.yaml" command="load"/>
 
-  <!-- Spawn controllers -->
+  <!-- Spawn controllers (delay to ensure robot is spawned first) -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         output="screen" ns="/humanoid"
         args="
@@ -37,27 +37,22 @@
           ankle_pitch_right_effort_controller
           ankle_roll_left_effort_controller
           ankle_roll_right_effort_controller
-          hip_pitch_left_position_controller
-          hip_pitch_right_position_controller
-          hip_roll_left_position_controller
-          hip_roll_right_position_controller
-          knee_left_position_controller
-          knee_right_position_controller
-        " />
+          hip_pitch_left_effort_controller
+          hip_pitch_right_effort_controller
+          hip_roll_left_effort_controller
+          hip_roll_right_effort_controller
+          knee_left_effort_controller
+          knee_right_effort_controller
+        ">
+    <param name="wait_for_model" value="true"/>
+    <param name="stop_timeout" value="5.0"/>  <!-- added for graceful shutdown -->
+  </node>
 
-  <!-- Balance Controller -->
+  <!-- Main Balance Controller -->
   <node name="humanoid_balance_controller" pkg="humanoid_balance" type="gazebo_humanoid_controller.py" output="screen"/>
 
+  <!-- Walking + Command Nodes -->
   <node name="autonomous_walk_cmd" pkg="humanoid_balance" type="autonomous_walking_cmd.py" output="screen"/>
-
-
-  <!-- Trajectory Generator -->
   <node name="trajectory_generator" pkg="humanoid_balance" type="trajectory_generator.py" output="screen"/>
-
-  <node name="walking_pattern_generator" pkg="humanoid_balance" type="walking_pattern_generator.py" output="screen" />
-  <!-- Walking Generator Node -->
-
-  <rosparam file="$(find humanoid_balance)/config/humanoid_control.yaml" command="load"/>
-
+  <node name="walking_pattern_generator" pkg="humanoid_balance" type="walking_pattern_generator.py" output="screen"/>
 </launch>
-
